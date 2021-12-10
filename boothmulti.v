@@ -12,14 +12,16 @@ module boothmulti #(
   // reg_A stores the multiplicand
   // reg_S stores the two's complement of the multiplicand
   // reg_P stores the multiplier and the partial products of the multiplication
-  reg signed [INTERNAL_WIDTH:0] reg_A, reg_S ; 
+  reg signed [INPUT_WIDTH:0] reg_A, reg_S ; 
   reg signed [(INTERNAL_WIDTH-1):0] reg_P;
 
   wire signed [(INPUT_WIDTH-1):0] complement2_A;
  
-  wire signed [INTERNAL_WIDTH:0] sum, s_double, a_double, mux_input;
+  wire signed [INPUT_WIDTH:0] sum, s_double, a_double, mux_input;
   wire signed [(INTERNAL_WIDTH-1):0]  mux_op ;
   wire en_Op;
+
+  ///////////////////////////////////////////////
 
   assign complement2_A = ~(multiplicand) + 6'd1;
 
@@ -64,9 +66,8 @@ module boothmulti #(
 
   // register the product
   always @(posedge clk) begin
-    if (rst) begin
-        reg_P <= {7'd0,multiplier,1'b0};
-    end       
+    if (rst)
+        reg_P <= {7'd0,multiplier,1'b0};      
     else if (enP)
       reg_P <= mux_op >>> 2'b10; //Each cycle P is shifted 2 positions to the right
   end

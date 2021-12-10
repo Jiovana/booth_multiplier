@@ -32,8 +32,8 @@ module testbench #(
   initial begin
     tb_clk = 1'b1;
     tb_reset = 1'b1;
-    tb_multiplicand = 6'd31;
-    tb_multiplier = 6'd24;
+    tb_multiplicand = 6'd31; // The range is 31 to -31 
+    tb_multiplier = 6'd24;  // result = 744
     `PERIOD;
     `HALF_PERIOD;
     tb_reset = 1'b0;
@@ -45,7 +45,7 @@ module testbench #(
     tb_reset = 1'b1;
     
     tb_multiplicand =-6'd20;
-    tb_multiplier = -6'd31;
+    tb_multiplier = 6'd31; // result = -620
     `HALF_PERIOD;
     `PERIOD;
     tb_reset = 1'b0;
@@ -56,7 +56,7 @@ module testbench #(
      tb_reset = 1'b1;
     
     tb_multiplicand = -6'd23;
-    tb_multiplier = -6'd17;
+    tb_multiplier = -6'd17; // result = 391
     `HALF_PERIOD;
     `PERIOD;
     tb_reset = 1'b0;

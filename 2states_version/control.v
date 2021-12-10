@@ -7,6 +7,9 @@ module control #(
     output wire enP, rst_out, enInp
   );
 
+  //two state version means we have 2 main states now, muxes and charge
+  // muxes raises enInp - saving the mux_input result and the enable for mux_op
+  // charge raises enP - saving the partial product in reg_P
   localparam start = 0, muxes = 1, charge = 2, final = 3 ;
   reg [(STATE_WIDTH-1):0] reg_state, next;
   reg enP_sg, rst_out_sg, enInp_sg;
@@ -18,6 +21,7 @@ module control #(
         reg_state <= next;
   end
 
+  //slightly more complex fsm with 4 states now. 
   always @(*) begin
     case (reg_state)
       start: begin

@@ -1,3 +1,8 @@
+// this version improves the circuit frequency by breaking the combinational logic into
+// two parts: one to obtain the correct input for the sum and mux_op enable signal, 
+// and the other to make the sum, shift, and update reg_P
+// however, it takes twice the time to have an output, so increasing the frequency has no benefit
+
 module boothmulti #(
     parameter INPUT_WIDTH = 6 ,
     parameter INTERNAL_WIDTH = 14,
@@ -12,17 +17,16 @@ module boothmulti #(
   // reg_A stores the multiplicand
   // reg_S stores the two's complement of the multiplicand
   // reg_P stores the multiplier and the partial products of the multiplication
-
-
-  
-  reg signed [6:0] reg_A, reg_S, reg_mux_inp ; 
+  reg signed [INPUT_WIDTH:0] reg_A, reg_S, reg_mux_inp ; 
   reg signed [(INTERNAL_WIDTH-1):0] reg_P;
   reg reg_enableOp;
   wire signed [(INPUT_WIDTH-1):0] complement2_A;
  
-  wire signed [6:0] sum, s_double, a_double, mux_input;
+  wire signed [INPUT_WIDTH:0] sum, s_double, a_double, mux_input;
   wire signed [(INTERNAL_WIDTH-1):0]  mux_op ;
   wire en_Op;
+
+  //////////////////////////////////////////////
 
   assign complement2_A = ~(multiplicand) + 6'd1;
 
@@ -32,8 +36,9 @@ module boothmulti #(
   assign mux_input = (reg_P[2]) ? ((reg_P[1] ^ reg_P[0]) ? reg_S : s_double) 
                                   : ((reg_P[1] ^ reg_P[0]) ? reg_A : a_double);
 
+  // two additional regs to save mux_inp and enable_op (and additional enable signal)
   always @(posedge clk) begin
-  if (enInp) begin
+    if (enInp) begin
       reg_mux_inp <= mux_input;
       reg_enableOp <= en_Op;
     end 
@@ -51,16 +56,13 @@ module boothmulti #(
     if (rst) begin
       reg_A <= {multiplicand[5], multiplicand};
       reg_S <= {complement2_A[5], complement2_A};
-    end
-    
+    end    
   end
 
   // register the product
   always @(posedge clk) begin
-    if (rst) begin
-        reg_P <= {7'd0,multiplier,1'b0};
-    end
-        
+    if (rst)
+        reg_P <= {7'd0,multiplier,1'b0};  
     else if (enP)
       reg_P <= mux_op >>> 2'b10;
   end
