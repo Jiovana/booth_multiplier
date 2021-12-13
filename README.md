@@ -3,7 +3,7 @@
 Verilog implementation of the Booth's multiplier for 6-bit inputs, following the optimized version presented in the last half of this [video](https://www.youtube.com/watch?v=FkCT6nX6c-c). More info in the [wiki](https://en.wikipedia.org/wiki/Booth%27s_multiplication_algorithm).
 
 ## Synthesis results
-Logical synthesis ran using Quartus Prime.  
+Logical synthesis was performed using Quartus Prime.  
 Device: 5CGXFC7C6U19C7
 
 **1. Original version (non-optimized, first half of the video):**
